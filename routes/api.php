@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,8 +24,17 @@ Route::post('register',[AuthController::class,'register']);
 
 Route::post('login',[AuthController::class,'login']);
 
+//Products
+Route::get('get_products',[ProductController::class,'index']);
+Route::post('add_product',[ProductController::class,'store']);
+Route::post('update_product/{id}',[ProductController::class,'update']);
+Route::delete('delete_product/{id}',[ProductController::class,'destroy']);
+
+
 Route::middleware(['auth:sanctum'])->group(function () {
+
     Route::get('logout',[AuthController::class,'logout']);
+    
 
 
 
