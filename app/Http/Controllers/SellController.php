@@ -64,19 +64,17 @@ class SellController extends Controller
             $sellD->price = $item['sale_price'];
             $sellD->sells_sell_id = $sellId[0]->sell_id;
 
-            // if (es producto) {
-            //     $sellD->products_product_id = $item['id']; 
-            // }
-            // else if(es servicio) {
-            //     $sellD->services_service_id = $item['id'];
-            // }
-
-            $sellD->products_product_id = $item['id']; 
+            if ($item['type'] == 1) {
+                $sellD->products_product_id = $item['id'];                
+            } else if ($item['type'] == 2) {
+                $sellD->services_service_id = $item['id'];
+            }
+            
             $sellD->save();
 
             //Actualiza el inventario
             $data = array();
-            $data['stock'] = $item['stock']-$item['amount'];
+            $data['stock'] = $item['stock'] - $item['amount'];
 
             if ($data['stock'] <= 0) {
                 $data['state']  = false;

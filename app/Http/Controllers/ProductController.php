@@ -115,6 +115,9 @@ class ProductController extends Controller
     public function destroy($id)
     {
         //
-        DB::table('products')->where('product_id', $id)->delete();
+        $data = array();
+        $data['state']  = false;
+        DB::table('products')->where('product_id', $id)->update($data);
+        // DB::table('products')->where('product_id', $id)->delete();
     }
 }
