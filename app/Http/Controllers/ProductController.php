@@ -16,11 +16,12 @@ class ProductController extends Controller
     public function index()
     {
         //
-        $product = Product::all();
+        // $product = Product::all();
+        $product = Product::where('state', 1)->orderBy('registration_date', 'desc')->get();
         return $product;
 
-        // $propiedades = DB::table('tcr_propiedades')->get();
-        // return $propiedades;
+        // $productes = DB::table('tcr_productes')->get();
+        // return $productes;
     }
 
     /**
@@ -42,17 +43,17 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
-        $propiedad = new Product;
-        $propiedad->product_id = $request->product_id;
-        $propiedad->name = $request->name;
-        $propiedad->purchase_price = $request->purchase_price;
-        $propiedad->sale_price = $request->sale_price;
-        $propiedad->stock = $request->stock;
-        $propiedad->original_stock = $request->original_stock;
-        $propiedad->state = $request->state;
-        $propiedad->registration_date = $request->registration_date;
-        $propiedad->description = $request->description;
-        $propiedad->save();
+        $product = new Product;
+        $product->product_id = $request->product_id;
+        $product->name = $request->name;
+        $product->purchase_price = $request->purchase_price;
+        $product->sale_price = $request->sale_price;
+        $product->stock = $request->stock;
+        $product->original_stock = $request->original_stock;
+        $product->state = $request->state;
+        $product->registration_date = $request->registration_date;
+        $product->description = $request->description;
+        $product->save();
     }
 
     /**
@@ -64,8 +65,8 @@ class ProductController extends Controller
     public function show($id)
     {
         //
-        // $propiedad = DB::table('tcr_propiedades')->where('idPropiedad', $id)->first();
-        // return response()->json($propiedad);
+        // $product = DB::table('tcr_productes')->where('idPropiedad', $id)->first();
+        // return response()->json($product);
     }
 
     /**
@@ -89,25 +90,20 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         //
-        // $data = array();
-        // $data['nombre'] = $request->nombre;
-        // $data['descripcion'] = $request->descripcion;
-        // $data['precio'] = $request->precio;
-        // $data['tamanioArea'] = $request->tamanioArea;
-        // $data['unidadTamanioArea'] = $request->unidadTamanioArea;
-        // $data['terrenoArea'] = $request->terrenoArea;
-        // $data['unidadTerrenoArea'] = $request->unidadTerrenoArea;
-        // $data['habitaciones'] = $request->habitaciones;
-        // $data['dormitorios'] = $request->dormitorios;
-        // $data['banios'] = $request->banios;
-        // $data['anioConstruccion'] = $request->anioConstruccion;
-        // $data['urlVideo'] = $request->urlVideo;
-        // $data['direccion'] = $request->direccion;
-        // $data['tcr_provincias_idProvincia'] = $request->tcr_provincias_idProvincia;
-        // $data['tcr_ciudades_idCiudad'] = $request->tcr_ciudades_idCiudad;
-        // $data['tcr_localidades_idLocalidad'] = $request->tcr_localidades_idLocalidad;
-        // $data['tcr_tiposPropiedad_idTiposPropiedad'] = $request->tcr_tiposPropiedad_idTiposPropiedad;
-        // DB::table('tcr_propiedades')->where('idPropiedad', $id)->update($data);
+        $data = array();
+        
+        // $data['product_id'] = $request->product_id;
+        $data['name'] = $request->name;
+        $data['purchase_price'] = $request->purchase_price;
+        $data['sale_price'] = $request->sale_price;
+        $data['stock'] = $request->stock;
+        $data['description'] = $request->description;
+
+        if ($request->stock <= 0) {
+            $data['state']  = false;
+        }
+
+        DB::table('products')->where('product_id', $id)->update($data);
     }
 
     /**
