@@ -44,5 +44,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //Sells
     Route::post('add_sell', [SellController::class, 'store']);
+    Route::get('get_sales', [SellController::class, 'index']);
     
 });

@@ -18,11 +18,17 @@ class SellController extends Controller
     {
         //
         // $sell = Sell::all();
-        $sell = Sell::where('state', 1)->orderBy('registration_date', 'desc')->get();
-        return $sell;
-
-        // $selles = DB::table('tcr_selles')->get();
-        // return $selles;
+        // $sell = Sell::where('state', 1)->orderBy('registration_date', 'desc')->get();
+        // return $sell;
+        $sales = DB::select('SELECT sel.sell_id, sel.total_price, sel.subtotal_price, sel.tax, sel.discount, sel.date, sel.state, sed.sells_description_id, sed.price as item_price, sed.amount,  
+                                    pro.product_id, pro.name as product_name, ser.service_id, ser.name as service_name
+                            FROM sells sel 
+                            INNER JOIN sells_description sed ON sells_sell_id = sell_id
+                            LEFT JOIN products pro ON product_id = sed.products_product_id
+                            LEFT JOIN services ser ON service_id = sed.services_service_id
+                            ORDER BY sel.sell_id DESC');
+        //  $sales = DB::table('sells')->get();
+        return $sales;
     }
 
     /**
@@ -43,10 +49,12 @@ class SellController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Crea y guarda la venta
         $sell = new Sell;
         $sell->sell_id = $request->sell_id;
         $sell->total_price = $request->total_price;
+        $sell->subtotal_price = $request->subtotal_price;
+        $sell->tax = $request->tax;
         $sell->discount = $request->discount;
         $sell->date = $request->date;
         $sell->state = $request->state;
@@ -54,8 +62,10 @@ class SellController extends Controller
         $sell->clients_client_id = $request->clients_client_id;
         $sell->save();
 
+        //Obtiene el Id de la venta recién creada
         $sellId = DB::table('sells')->where('sell_id', DB::raw("(select max(`sell_id`) from sells)"))->get();
 
+        //Recorre el array recibido que contiene los productos de esa venta y los va insertando
         foreach ($request->sellContent as $item) {
 
             //Agrega el producto como parte de cierta venta
@@ -64,14 +74,16 @@ class SellController extends Controller
             $sellD->price = $item['sale_price'];
             $sellD->sells_sell_id = $sellId[0]->sell_id;
 
+            //Esto no
             if ($item['type'] == 1) {
-                $sellD->products_product_id = $item['id'];                
+                $sellD->products_product_id = $item['id'];
             } else if ($item['type'] == 2) {
                 $sellD->services_service_id = $item['id'];
             }
-            
-            $sellD->save();
 
+            $sellD->save(); //Lo guarda
+
+            //Esto no
             //Actualiza el inventario
             $data = array();
             $data['stock'] = $item['stock'] - $item['amount'];
