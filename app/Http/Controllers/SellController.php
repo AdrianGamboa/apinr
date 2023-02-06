@@ -21,7 +21,7 @@ class SellController extends Controller
         // $sell = Sell::where('state', 1)->orderBy('registration_date', 'desc')->get();
         // return $sell;
         $sales = DB::select('SELECT sel.sell_id, usu.id, usu.name, usu.lastname, sel.total_price, sel.subtotal_price, sel.tax, sel.discount, sel.date, sel.state, sed.sells_description_id, sed.price as item_price, sed.amount,  
-                                    pro.product_id, pro.name as product_name, ser.service_id, ser.name as service_name
+                                    pro.product_id, pro.name as product_name, pro.purchase_price, ser.service_id, ser.name as service_name
                             FROM sells sel 
                             INNER JOIN sells_description sed ON sells_sell_id = sell_id
                             LEFT JOIN users usu ON id = sel.users_user_id
